@@ -1,0 +1,14 @@
+.idea/
+*.iml
+*.build
+target/
+*.hxproj
+.munit
+compile_cpp.hxml
+compile_js.hxml
+compile_swf.hxml
+project.nmml
+test.hxml
+test/TestMain.hx
+test/TestSuite.hx
+

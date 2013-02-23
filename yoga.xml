@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project>
+    <yoga-version>1</yoga-version>
+    <compiler-version>2.10</compiler-version>
+
+    <id>com.wighawag.game-utils</id>
+    <version>0.1.0-SNAPSHOT</version>
+
+    <main>Main</main>
+
+    <sources>
+        <source path="src"/>
+    </sources>
+
+    <tests framework="munit" path="test"/>
+
+    <targets hxml="compile">
+        <target name="swf">
+            <param line="-swf-version 11"/>
+        </target>
+	<target name="cpp" />
+	<target name="js" />
+    </targets>
+    
+    <dependencies>
+    </dependencies>
+</project>
