@@ -4,8 +4,7 @@
     <compiler-version>2.10</compiler-version>
 
     <id>com.wighawag.game-utils</id>
-    <version>0.1.0</version>
-	<prepared>2013-02-23 22:12:38</prepared>
+    <version>0.1.1-SNAPSHOT</version>
 
     <main>Main</main>
 
