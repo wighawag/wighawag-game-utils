@@ -23,5 +23,14 @@
     </targets>
     
     <dependencies>
+        <haxelib name="polygonal-ds" version="1.36"/>
+
+        <repository id="com.wighawag.report.Report" version="0.1.1-SNAPSHOT" />
+        <repository id="com.wighawag.components-core" version="0.1.1-SNAPSHOT" />
+        <repository id="com.wighawag.view" version="0.1.1-SNAPSHOT" />
+        <repository id="com.wighawag.asset" version="0.1.1-SNAPSHOT" />
+        <repository id="com.wighawag.ui" version="0.1.1-SNAPSHOT" />
+
+
     </dependencies>
 </project>

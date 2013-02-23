@@ -1,5 +1,8 @@
 package;
 
+import com.wighawag.ui.BasicUIAssetProvider;
+import com.wighawag.ui.BasicGenericUI;
+import com.wighawag.asset.load.Batch;
 import massive.munit.util.Timer;
 import massive.munit.Assert;
 import massive.munit.async.AsyncFactory;
@@ -43,7 +46,9 @@ class ExampleTest
 	@Test
 	public function testExample():Void
 	{
-		Assert.isTrue(true);
+        // allow NME testing with nme.Assets.getBitmapData and nme.Assets.getBytes
+		//new com.wighawag.asset.NinePatchLibrary(new com.wighawag.asset.spritesheet.TextureAtlasLibrary(new com.wighawag.asset.load.NMEAssetManager(new com.wighawag.asset.load.ResourceMap(""))));
+        new BasicGenericUI("", "", new BasicUIAssetProvider(new Batch([]), new Batch([])));
 	}
 	
 	@AsyncTest
