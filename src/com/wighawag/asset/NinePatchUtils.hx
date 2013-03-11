@@ -1,12 +1,12 @@
 package com.wighawag.asset;
 import com.wighawag.asset.NinePatch;
 import com.fermmtools.utils.ObjectHash;
-import com.wighawag.asset.renderer.NMEDrawingContext;
+using com.wighawag.view.TexturedQuadProgram;
 import com.wighawag.asset.spritesheet.TextureAtlas;
 import com.wighawag.asset.spritesheet.SubTexture;
 import com.wighawag.asset.load.BitmapAsset;
 class NinePatchUtils {
-    inline static public function draw(ninePatch : NinePatch, context : NMEDrawingContext, x : Int, y : Int, width : Int, height : Int) : Void{
+    inline static public function draw(ninePatch : NinePatch, program : TexturedQuadProgram, x : Int, y : Int, width : Int, height : Int) : Void{
 
         var currentX = x;
         var currentY = y;
@@ -32,7 +32,7 @@ class NinePatchUtils {
                     scaleY = 1;
                 }
 
-                context.drawScaledTexture(ninePatch.bitmapAsset, patch.x, patch.y, patch.width, patch.height, currentX, currentY, scaleX, scaleY);
+                program.draw(ninePatch.bitmapAsset.id, patch.x, patch.y, patch.width, patch.height, currentX, currentY, currentX + patch.width * scaleX, currentY + patch.height * scaleY);
 
                 currentX += Std.int(scaleX * patch.width);
                 pHeight = patch.height;
@@ -50,16 +50,16 @@ class NinePatchUtils {
         return height + ninePatch.nonContentHeight;
     }
 
-    inline static public function drawAccordingToContentSize(ninePatch : NinePatch, context : NMEDrawingContext, x : Int, y : Int, width : Int, height : Int) : Void{
-        draw(ninePatch, context, x, y, width + ninePatch.nonContentWidth, height + ninePatch.nonContentHeight );
+    inline static public function drawAccordingToContentSize(ninePatch : NinePatch, program : TexturedQuadProgram, x : Int, y : Int, width : Int, height : Int) : Void{
+        draw(ninePatch, program, x, y, width + ninePatch.nonContentWidth, height + ninePatch.nonContentHeight );
     }
 
-    inline static public function drawAccordingToContentWidth(ninePatch : NinePatch, context : NMEDrawingContext, x : Int, y : Int, width : Int, height : Int) : Void{
-        draw(ninePatch, context, x, y, width + ninePatch.nonContentWidth, height);
+    inline static public function drawAccordingToContentWidth(ninePatch : NinePatch, program : TexturedQuadProgram, x : Int, y : Int, width : Int, height : Int) : Void{
+        draw(ninePatch, program, x, y, width + ninePatch.nonContentWidth, height);
     }
 
-    inline static public function drawAccordingToContentHeight(ninePatch : NinePatch, context : NMEDrawingContext, x : Int, y : Int, width : Int, height : Int) : Void{
-        draw(ninePatch, context, x, y, width, height + ninePatch.nonContentHeight);
+    inline static public function drawAccordingToContentHeight(ninePatch : NinePatch, program : TexturedQuadProgram, x : Int, y : Int, width : Int, height : Int) : Void{
+        draw(ninePatch, program, x, y, width, height + ninePatch.nonContentHeight);
     }
 
 

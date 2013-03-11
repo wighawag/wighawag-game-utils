@@ -11,4 +11,4 @@ project.nmml
 test.hxml
 test/TestMain.hx
 test/TestSuite.hx
-
+out/

@@ -13,9 +13,10 @@ import com.wighawag.ui.content.UIContent;
 import com.wighawag.ui.view.UIElementView;
 import com.wighawag.ui.view.UIViewProvider;
 import com.wighawag.ui.view.Container;
-import com.wighawag.asset.renderer.NMEDrawingContext;
 import com.wighawag.ui.core.UIActionElement;
 import msignal.Signal;
+
+import com.wighawag.view.TexturedQuadProgram;
 
 typedef ButtonSpec = {textId : String};
 
@@ -110,7 +111,7 @@ class ButtonView implements UIElementView{
     }
 
 
-    public function draw(context:NMEDrawingContext, x:Int, y:Int, width:Int, height:Int, screenInput : ScreenInput):Void {
+    public function draw(program:TexturedQuadProgram, x:Int, y:Int, width:Int, height:Int, screenInput : ScreenInput):Void {
 
         if (screenInput.target == this){
             switch(screenInput.state){
@@ -149,9 +150,9 @@ class ButtonView implements UIElementView{
 	    var textY = Std.int(y + ninePatch.contentYOffset + (height - ninePatch.nonContentHeight) / 2 - textHeight / 2);
 
 
-        ninePatch.draw(context, x, y, width, height);
+        ninePatch.draw(program, x, y, width, height);
 
-        font.draw(context, text,textX, textY);
+        font.draw(program, text,textX, textY);
     }
 
 

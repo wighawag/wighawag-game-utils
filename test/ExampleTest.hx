@@ -1,5 +1,8 @@
 package;
 
+import com.wighawag.gpu.GPURenderer;
+import com.wighawag.view.Camera2D;
+import com.wighawag.ui.view.UILayer;
 import com.wighawag.ui.BasicUIAssetProvider;
 import com.wighawag.ui.BasicGenericUI;
 import com.wighawag.asset.load.Batch;
@@ -46,9 +49,10 @@ class ExampleTest
 	@Test
 	public function testExample():Void
 	{
-        // allow NME testing with nme.Assets.getBitmapData and nme.Assets.getBytes
+        // TODO allow NME testing with nme.Assets.getBitmapData and nme.Assets.getBytes ?
 		//new com.wighawag.asset.NinePatchLibrary(new com.wighawag.asset.spritesheet.TextureAtlasLibrary(new com.wighawag.asset.load.NMEAssetManager(new com.wighawag.asset.load.ResourceMap(""))));
-        new BasicGenericUI("", "", new BasicUIAssetProvider(new Batch([]), new Batch([])));
+        var ui = new BasicGenericUI("", "", new BasicUIAssetProvider(new Batch([]), new Batch([])));
+        //var uiLayer = new UILayer(ui.root, new Camera2D(new GPURenderer()));
 	}
 	
 	@AsyncTest

@@ -1,19 +1,26 @@
 package com.wighawag.ui.view;
 
+import com.wighawag.gpu.GPUContext;
 import nme.ui.Multitouch;
 import nme.display.Stage;
 import com.wighawag.ui.view.ScreenInput;
-import com.wighawag.asset.renderer.NMEDrawingContext;
 import com.wighawag.view.ViewLayer;
 import nme.events.MouseEvent;
+import com.wighawag.view.TexturedQuadProgram;
+import com.wighawag.view.Camera2D;
 
-class UILayer implements ViewLayer<NMEDrawingContext>{
+class UILayer implements ViewLayer<GPUContext>{
 
     private var uiContainer : UIElementView;
 
     private var screenInput : ScreenInput;
 
-    public function new(uiContainer : UIElementView) {
+    private var drawProgram : TexturedQuadProgram;
+
+    public function new(uiContainer : UIElementView, camera : Camera2D) {
+
+        drawProgram = new TexturedQuadProgram(camera);
+
         this.uiContainer = uiContainer;
         if(Multitouch.supportsTouchEvents){
             screenInput = new TouchInput(nme.Lib.current.stage);
@@ -23,7 +30,7 @@ class UILayer implements ViewLayer<NMEDrawingContext>{
     }
 
 
-    public function render(context:NMEDrawingContext):Void {
+    public function render(context:GPUContext):Void {
 
         var drawList : Array<ViewPositioning> = new Array();
 
@@ -43,8 +50,12 @@ class UILayer implements ViewLayer<NMEDrawingContext>{
             i --;
         }
 
+        context.addProgram(drawProgram);
+        drawProgram.reset();
+
+
         for (viewPositioning in drawList){
-            viewPositioning.view.draw(context, viewPositioning.x, viewPositioning.y, viewPositioning.width, viewPositioning.height, screenInput);
+            viewPositioning.view.draw(drawProgram, viewPositioning.x, viewPositioning.y, viewPositioning.width, viewPositioning.height, screenInput);
         }
 
         screenInput.postRender();

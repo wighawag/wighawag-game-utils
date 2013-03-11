@@ -1,7 +1,7 @@
 package com.wighawag.ui.view;
 
 import com.wighawag.ui.view.ScreenInput;
-import com.wighawag.asset.renderer.NMEDrawingContext;
+import com.wighawag.view.TexturedQuadProgram;
 
 typedef BasicStyle = {assetId : String, font : String};
 
@@ -31,7 +31,7 @@ class Container<LayoutSpec, LayoutParameterSpec> implements UIElementView{
     public function processScreenInput(screenInput : ScreenInput, x:Int, y:Int, width:Int, height:Int):Void{
     }
 
-    public function draw(context:NMEDrawingContext, x:Int, y:Int, width:Int, height:Int, screenInput : ScreenInput):Void {
+    public function draw(program:TexturedQuadProgram, x:Int, y:Int, width:Int, height:Int, screenInput : ScreenInput):Void {
 
         if(style.assetId != null){
             // TODO use style to draw itself
