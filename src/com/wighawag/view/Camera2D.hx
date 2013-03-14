@@ -13,6 +13,8 @@ class Camera2D {
     private var gpuRenderer : GPURenderer;
     private var screenSpace : Rectangle;
     private var zoom : Float;
+    private var x : Float = 0;
+    private var y : Float = 0;
 
     public var scale(default, null) : Float;
 
@@ -44,12 +46,20 @@ class Camera2D {
 
 
         projectionMatrix = new Matrix3D(Vector.ofArray([
-        2/gpuRenderer.width * scale, 0, 0, 0,
-        0, -2/gpuRenderer.height * scale, 0, 0,
+        2/gpuRenderer.width * scale, 0, 0, x,
+        0, -2/gpuRenderer.height * scale, 0, y,
         0, 0, -1, 0,
         -1, 1, 0, 1
         ]));
     }
+
+    public function setPosition(x : Float, y : Float) : Void{
+        this.x = x;
+        this.y = y;
+        computeMatrix();
+    }
+
+
 
 
 }

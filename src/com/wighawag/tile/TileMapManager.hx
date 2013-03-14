@@ -11,6 +11,7 @@ import com.wighawag.asset.load.AssetManager;
 import com.wighawag.asset.load.BytesAsset;
 import com.wighawag.asset.load.Asset;
 import com.wighawag.asset.load.Batch;
+import com.wighawag.core.AssetComponent;
 import de.polygonal.ds.IntHashTable;
 import de.polygonal.ds.IntIntHashTable;
 import com.wighawag.asset.entity.EntityTypeLibrary;
@@ -319,6 +320,32 @@ class TileMapManager {
 
 	}
 
+
+    public static function getRequiredSprites(tileMap : TileMap) : Array<AssetId>{
+        var spriteIds : Array<String> = new Array();
+        var numLayers = tileMap.numOfLayers();
+        for (i in 0...numLayers){
+            var layer = tileMap.getLayer(i);
+            if(Std.is(layer, ObjectLayer)){
+                var objectLayer : ObjectLayer = cast(layer);
+                for (object in objectLayer.objects){
+                    if(object.entityType != null){
+                        var assetComponent = object.entityType.get(AssetComponent);
+                        if(assetComponent != null){
+                            spriteIds.push(assetComponent.assetId);
+                        }
+                    }else{
+                        Report.aWarning("TileMapManager", "an objetc without entityType ?");
+                    }
+
+                }
+            }else if(Std.is(layer, TileLayer)){
+                var tileLayer : TileLayer = cast(layer);
+                spriteIds = spriteIds.concat(Tileset.getSpriteIds(tileLayer.tileset));
+            }
+        }
+        return spriteIds;
+    }
 
 }
 
