@@ -16,7 +16,7 @@ class ObjectLayer implements MapLayer{
 
     public var type(default,null) : LayerType;
 
-    public var objects(default,null): Array<ObjectPlacement>; // I wish we could have unmutable var in haxe
+    public var objects(default,null): Array<ObjectPlacement>; // I wish we could have imutables in haxe
     public var onUpdated(default,null) : Signal0;
     public var onObjectAdded(default, null) : Signal1<ObjectPlacement>;
 

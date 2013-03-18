@@ -1,6 +1,8 @@
 package com.wighawag.view;
 
 
+import com.wighawag.tile.MapLayer;
+import com.wighawag.tile.ObjectLayer;
 import com.wighawag.gpu.GPUContext;
 import com.fermmtools.utils.ObjectHash;
 import com.wighawag.system.Model;
@@ -14,7 +16,12 @@ class GPUSpriteViewLayer implements ViewLayer<GPUContext> {
     private var entitiesViews : ObjectHash<Entity,EntityView<TexturedQuadProgram>>;
     private var camera : Camera2D;
 
-    public function new(model : Model, entityViewFactory : EntityViewFactory<TexturedQuadProgram>, camera : Camera2D) {
+    private var program : TexturedQuadProgram;
+
+    public var layer : ObjectLayer;
+
+    public function new(layer : ObjectLayer, model : Model, entityViewFactory : EntityViewFactory<TexturedQuadProgram>, camera : Camera2D) {
+        this.layer = layer;
         entitiesViews = new ObjectHash();
         this.model = model;
         this.entityViewFactory = entityViewFactory;
@@ -24,6 +31,7 @@ class GPUSpriteViewLayer implements ViewLayer<GPUContext> {
         for(entity in model.entities){
             onEntityAdded(entity);
         }
+        program = new TexturedQuadProgram(camera);
     }
 
     private function onEntityAdded(entity : Entity) : Void{
@@ -38,13 +46,25 @@ class GPUSpriteViewLayer implements ViewLayer<GPUContext> {
     }
 
     public function render(context:GPUContext):Void {
-        var program = new TexturedQuadProgram(camera);
         context.addProgram(program);
         program.reset();
         for (entity in entitiesViews){
             entitiesViews.get(entity).draw(program);
         }
+        program.upload();
     }
 
+    public function dispose() : Void{
+        model.onEntityAdded.remove(onEntityAdded);
+        model.onEntityRemoved.remove(onEntityRemoved);
+        program.dispose();
+        model = null;
+        entityViewFactory = null;
+        entitiesViews = null;
+        camera = null;
+        program = null;
+        layer = null;
+
+    }
 
 }

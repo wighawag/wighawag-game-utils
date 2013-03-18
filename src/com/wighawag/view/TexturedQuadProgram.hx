@@ -1,5 +1,6 @@
 package com.wighawag.view;
 
+import nme.display3D.textures.Texture;
 import nme.utils.ByteArray;
 import nme.utils.ByteArray;
 import nme.utils.Endian;
@@ -22,16 +23,16 @@ class TexturedQuadProgram implements GPUProgram{
 
 	public var batches : Hash<TextureBatch>;
 
-
 	private var glslProgram : GLSLProgram;
-
-	private var vertexBuffer : VertexBuffer3D;
-	private var indexBuffer : IndexBuffer3D;
 
 	private var context3D : Context3D;
 	private var availableTextures : Array<TextureData>;
 
     private var camera : Camera2D;
+
+    private var drawBatches : Array<Batch>;
+
+    public var dataRequired : Bool;
 
     public function new(camera : Camera2D) {
 	    batches = new Hash();
@@ -42,6 +43,7 @@ class TexturedQuadProgram implements GPUProgram{
 	public function setContext(context3D : Context3D) : Void{
 		if(this.context3D != context3D){
 			this.context3D = context3D;
+            dataRequired = true;
 
 
             var vertShader =
@@ -83,6 +85,7 @@ class TexturedQuadProgram implements GPUProgram{
 	public function setAvailableTextures(availableTextures : Array<TextureData>) : Void{
 		if(this.availableTextures !=availableTextures){
 			this.availableTextures = availableTextures;
+            dataRequired = true;
             batches = new Hash();
 			for (texture in availableTextures){
 				var byteArrays : Array<ByteArray> = new Array();
@@ -100,6 +103,7 @@ class TexturedQuadProgram implements GPUProgram{
 
 	public function reset() : Void{
 		// reset bytearrays (at least the position)
+        dataRequired = true;
 		for(textureBatch in batches){
 			textureBatch.byteArrays[0].position =0;
 			textureBatch.byteArrays[1].position =0;
@@ -107,11 +111,9 @@ class TexturedQuadProgram implements GPUProgram{
 
 	}
 
-	public function execute() : Void{
-
-        context3D.setBlendFactors(nme.display3D.Context3DBlendFactor.SOURCE_ALPHA, nme.display3D.Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
-
-		for(texture in availableTextures){
+    public function upload() : Void{
+        drawBatches = new Array();
+        for(texture in availableTextures){
             var textureBatch = batches.get(texture.id);
 
             if(textureBatch == null){
@@ -120,40 +122,60 @@ class TexturedQuadProgram implements GPUProgram{
             }
 
             //skip if nothing has been added to the byteArray
-			if(textureBatch.byteArrays[0].position == 0){
-				continue;
-			}
+            if(textureBatch.byteArrays[0].position == 0){
+                continue;
+            }
 
-			var dataPerVertex = 5;
-			var indexByteArray = textureBatch.byteArrays[0];
-			var numIndices = Std.int(indexByteArray.position / 2);
-			var vertexByteArray = textureBatch.byteArrays[1];
-			var numVertices = Std.int(vertexByteArray.position / (4 *dataPerVertex));
-
-
-			// TODO might move it into initialization for optimization if possible (knowing how many things to draw)
-			vertexBuffer  = context3D.createVertexBuffer(numVertices, dataPerVertex);
-			vertexBuffer.uploadFromByteArray(vertexByteArray, 0, 0, numVertices);
-
-            glslProgram.attach();
-            glslProgram.setVertexUniformFromMatrix("proj",camera.projectionMatrix, true);
-            glslProgram.setTextureAt("texture", textureBatch.textureData.texture);
-            glslProgram.setVertexBufferAt("position",vertexBuffer, 0, nme.display3D.Context3DVertexBufferFormat.FLOAT_2);
-            glslProgram.setVertexBufferAt("uv",vertexBuffer, 2, nme.display3D.Context3DVertexBufferFormat.FLOAT_2);
-            glslProgram.setVertexBufferAt("alpha",vertexBuffer, 4, nme.display3D.Context3DVertexBufferFormat.FLOAT_1);
+            var dataPerVertex = 5;
+            var indexByteArray = textureBatch.byteArrays[0];
+            var numIndices = Std.int(indexByteArray.position / 2);
+            var vertexByteArray = textureBatch.byteArrays[1];
+            var numVertices = Std.int(vertexByteArray.position / (4 *dataPerVertex));
 
 
-			indexBuffer = context3D.createIndexBuffer(numIndices);
-			indexBuffer.uploadFromByteArray(indexByteArray,0,0, numIndices);
-			context3D.drawTriangles(indexBuffer, 0, Std.int(numVertices /2));
+            // TODO might move it into initialization for optimization if possible (knowing how many things to draw)
+            var vertexBuffer  = context3D.createVertexBuffer(numVertices, dataPerVertex);
+            vertexBuffer.uploadFromByteArray(vertexByteArray, 0, 0, numVertices);
+            var indexBuffer = context3D.createIndexBuffer(numIndices);
+            indexBuffer.uploadFromByteArray(indexByteArray,0,0, numIndices);
 
+            //Report.anInfo("TexturedQuadProgram", "adding batch for ", textureBatch.bitmapId);
+            drawBatches.push(new Batch(texture.id, vertexBuffer, indexBuffer, textureBatch.textureData.texture, Std.int(numVertices /2)));
+
+        }
+        dataRequired = false;
+    }
+
+
+
+
+	public function execute() : Void{
+
+        if(dataRequired){
+            return;
+        }
+
+        context3D.setBlendFactors(nme.display3D.Context3DBlendFactor.SOURCE_ALPHA, nme.display3D.Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
+
+		for(batch in drawBatches){
+            batch.draw(context3D, glslProgram, camera.projectionMatrix);
 		}
 
 	}
 
 	public function dispose() : Void{
-		//TODO destroy bindings and buffers
-	}
+        for (drawBatch in drawBatches){
+            drawBatch.dispose();
+        }
+        drawBatches = null;
+        glslProgram.dispose();
+        glslProgram = null;
+        batches = null;
+        context3D = null;
+        availableTextures = null;
+        camera = null;
+        dataRequired = true;
+    }
 
     public function draw(bitmapAssetId : String, srcX : Int, srcY : Int, srcW : Int, srcH : Int, x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void{
 
@@ -229,6 +251,45 @@ class TexturedQuadProgram implements GPUProgram{
 }
 
 
+class Batch{
+
+    private var id : String;
+    private var vertexBuffer : VertexBuffer3D;
+    private var indexBuffer : IndexBuffer3D;
+    private var texture : Texture;
+    private var numTriangles : Int;
+
+    public function new(id : String, vertexBuffer, indexBuffer, texture,numTriangles) {
+        this.id = id;
+        this.vertexBuffer = vertexBuffer;
+        this.indexBuffer= indexBuffer;
+        this.texture = texture;
+        this.numTriangles = numTriangles;
+    }
+
+    public function draw(context3D : Context3D, glslProgram : GLSLProgram, projectionMatrix : Matrix3D) : Void{
+        //var values : String = projectionMatrix.rawData.join(",");
+        //Report.anInfo("Batch", "drawing batch for ", id, "triangles " + numTriangles + " (" + values + ")");
+        glslProgram.attach();
+        glslProgram.setVertexUniformFromMatrix("proj",projectionMatrix, true);
+        glslProgram.setTextureAt("texture", texture);
+        glslProgram.setVertexBufferAt("position",vertexBuffer, 0, nme.display3D.Context3DVertexBufferFormat.FLOAT_2);
+        glslProgram.setVertexBufferAt("uv",vertexBuffer, 2, nme.display3D.Context3DVertexBufferFormat.FLOAT_2);
+        glslProgram.setVertexBufferAt("alpha",vertexBuffer, 4, nme.display3D.Context3DVertexBufferFormat.FLOAT_1);
+
+        context3D.drawTriangles(indexBuffer, 0, numTriangles);
+    }
+
+    public function dispose() : Void{
+        vertexBuffer.dispose();
+        vertexBuffer = null;
+        indexBuffer.dispose();
+        indexBuffer = null;
+        texture = null;
+    }
+
+
+}
 
 
 

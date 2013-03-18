@@ -47,11 +47,14 @@ class TileLayer implements MapLayer{
 	// public but should not be used by anyone
 	inline public function setTile(x : Int, y: Int, tile : Tile) : Void{
 		var tileKey : Int = key(x,y);
-		var removedTile = tiles.clr(tileKey);
+		var isTileRemoved = tiles.clr(tileKey);
 		if (tile != null){
 			tiles.set(tileKey, tile);
-		}
-        onUpdated.dispatch();
+            onUpdated.dispatch();
+		}else if(isTileRemoved){
+            onUpdated.dispatch();
+        }
+
 	}
 
 	inline public function getTileAt(x:Float, y:Float):Tile {

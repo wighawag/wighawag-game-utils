@@ -57,9 +57,20 @@ class UILayer implements ViewLayer<GPUContext>{
         for (viewPositioning in drawList){
             viewPositioning.view.draw(drawProgram, viewPositioning.x, viewPositioning.y, viewPositioning.width, viewPositioning.height, screenInput);
         }
+        drawProgram.upload();
 
         screenInput.postRender();
     }
 
+
+    public function dispose() : Void{
+        uiContainer = null;
+
+        screenInput.dispose();
+        screenInput = null;
+
+        drawProgram.dispose();
+        drawProgram = null;
+    }
 
 }

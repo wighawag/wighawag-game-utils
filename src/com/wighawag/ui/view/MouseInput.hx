@@ -43,4 +43,12 @@ class MouseInput implements ScreenInput{
         stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
         state = ScreenInputState.Up;
     }
+
+    public function dispose() : Void{
+        stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+        stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+        state = null;
+        target = null;
+        stage = null;
+    }
 }

@@ -15,4 +15,6 @@ interface ScreenInput {
 
     function preRender() : Void;
     function postRender() : Void;
+
+    function dispose() : Void;
 }

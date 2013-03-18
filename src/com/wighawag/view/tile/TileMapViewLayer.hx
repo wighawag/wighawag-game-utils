@@ -1,4 +1,5 @@
 package com.wighawag.view.tile;
+import com.wighawag.tile.MapLayer;
 import com.wighawag.gpu.GPUContext;
 import com.wighawag.tile.ObjectLayer;
 import com.wighawag.tile.TileLayer;
@@ -23,39 +24,78 @@ class TileMapViewLayer implements ViewLayer<GPUContext>{
     private var tileMap : TileMap;
     private var layerViews : Array<ViewLayer<GPUContext>>;
     private var sprites : Batch<Sprite>;
-    private var model : Model;
     private var camera : Camera2D;
+    private var model : Model;
 
     public function new(tilemap : TileMap, model : Model, sprites : Batch<Sprite>, camera : Camera2D) {
-        this.model = model;
         this.sprites = sprites;
         this.tileMap = tilemap;
         this.camera = camera;
-        onTileMapUpdated();
-        tileMap.onUpdated.add(onTileMapUpdated);
-    }
-
-    private function onTileMapUpdated() : Void{
-        layerViews = new Array();
+        this.model = model;
+        this.layerViews = new Array();
         for (layerIndex in 0...tileMap.numOfLayers()){
             var layer = tileMap.getLayer(layerIndex);
-            // TODO pass a factory to allow creation of specific views without having to repeat the code here
-            switch(layer.type){
-                case LayerOfTiles:
-                    var tileLayer : TileLayer = cast(layer);
-                    layerViews.push(new TileLayerView(tileLayer, sprites, camera));
-                case LayerOfObjects:
-                    var objectLayer : ObjectLayer = cast(layer);
-                    layerViews.push(new GPUSpriteViewLayer(model,new BasicLayeredViewFactory(sprites, layerIndex), camera));
-            }
-
+            onLayerAdded(layer);
         }
+        tileMap.onLayerAdded.add(onLayerAdded);
+        tileMap.onLayerRemoved.add(onLayerRemoved);
     }
+
+    private function onLayerAdded(layer : MapLayer) : Void{
+        // TODO pass a factory to allow creation of specific views without having to repeat the code here
+        switch(layer.type){
+            case LayerOfTiles:
+                var tileLayer : TileLayer = cast(layer);
+                layerViews.push(new TileLayerView(tileLayer, sprites, camera));
+            case LayerOfObjects:
+                var objectLayer : ObjectLayer = cast(layer);
+                layerViews.push(new GPUSpriteViewLayer(objectLayer, model,new BasicLayeredViewFactory(sprites, layerViews.length), camera));
+        }
+
+    }
+
+    private function onLayerRemoved(layer : MapLayer) : Void{
+        //TODO improve performance ?
+        for(layerView in layerViews){
+            if(Std.is(layerView,TileLayerView)){
+                var tileLayerView : TileLayerView = cast(layerView);
+                if(tileLayerView.layer == layer){
+                    tileLayerView.dispose();
+                    layerViews.remove(tileLayerView);
+                    return;
+                }
+            }else if(Std.is(layerView,GPUSpriteViewLayer)){
+                var gpuSpriteViewLayer : GPUSpriteViewLayer = cast(layerView);
+                if(gpuSpriteViewLayer.layer == layer){
+                    gpuSpriteViewLayer.dispose();
+                    layerViews.remove(gpuSpriteViewLayer);
+                    return;
+                }
+            }
+        }
+        Report.anError("TileMapViewLayer", "the layer was not found in the list of layer views :", layer);
+    }
+
+
+
 
     public function render(context:GPUContext):Void {
 		for(layerView in layerViews){
             layerView.render(context);
         }
+    }
+
+    public function dispose() : Void{
+        tileMap.onLayerAdded.remove(onLayerAdded);
+        tileMap.onLayerRemoved.remove(onLayerRemoved);
+        tileMap = null;
+        for (layerView in layerViews){
+            layerView.dispose();
+        }
+        layerViews = null;
+        sprites = null;
+        camera = null;
+        model = null;
     }
 
 

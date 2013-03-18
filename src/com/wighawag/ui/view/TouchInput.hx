@@ -49,4 +49,12 @@ class TouchInput implements ScreenInput {
         y = Std.int(event.stageY);
     }
 
+    public function dispose() : Void{
+        stage.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+        stage.removeEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+        state = null;
+        target = null;
+        stage = null;
+    }
+
 }
