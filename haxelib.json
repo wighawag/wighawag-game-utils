@@ -1,14 +1,14 @@
 {
   "name": "wighawag-game-utils",
   "url" : "https://github.wighawag/wighawag-game-utils/",
-  "license": "Wighawag",
+  "license": "GPL",
   "tags": ["cross"],
-  "description": "",
+  "description": "stuff to be but in specific libs",
   "version": "0.0.1",
   "releasenote": "",
   "contributors": ["wighawag"],
-  "dependencies": {"wighawag-report":"", "polygonal-ds":"1.4.0", 
-"wighawag-components-core":"","wighawag-view":"","wighawag-ui":"","wighawag-asset":"","wighawag-gpu":"", "wighawag-utils":"", "msignal":"", 
-"stage3d-glsl-wrapper":""},
+  "dependencies": {"wighawag-report":"0.0.1", "polygonal-ds":"1.4.0", 
+ "wighawag-components-core":"0.0.1","wighawag-view":"0.0.1","wighawag-ui":"0.0.1","wighawag-asset":"0.0.1","wighawag-gpu":"0.0.1", "wighawag-utils":"0.0.1", 
+"msignal":"1.2.1", "stage3d-glsl-wrapper":"0.0.1"},
   "classPath":"src"
 }
