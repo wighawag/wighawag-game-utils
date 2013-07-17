@@ -8,6 +8,7 @@
 
 package wighawag.core;
 
+import haxe.ds.StringMap;
 import haxe.xml.Fast;
 import wighawag.system.EntityTypeComponent;
 import wighawag.system.EntityComponent;
@@ -23,12 +24,12 @@ class EntityTypeParameters implements EntityTypeComponent{
     </ParametersComponent>
      */
 
-    private var parameters : Hash<Dynamic>;
+    private var parameters : StringMap<Dynamic>;
     public var onParamUpdated : Signal2<String,Dynamic>;
 
     public function new(xml : Xml) {
         onParamUpdated = new Signal2();
-        parameters = new Hash();
+        parameters = new StringMap();
 
         var x = new Fast(xml);
 

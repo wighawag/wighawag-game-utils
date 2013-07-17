@@ -16,7 +16,7 @@ import wighawag.system.Updatable;
 import wighawag.core.PlacementComponent;
 
 @entities(["wighawag.core.PlacementComponent"])
-class SpatialHashingSystem implements SystemComponent, implements Updatable{
+class SpatialHashingSystem implements SystemComponent implements Updatable{
 
     public function new() {
     }

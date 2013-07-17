@@ -51,8 +51,7 @@ class LinearLayout implements LayoutAlgorithm<LinearLayoutSpec, LinearLayoutPara
 		var maxChildMinWidth = _getMinWidth(layoutChildren, true);
 		var maxChildMinHeight = _getMinHeight(layoutChildren, true);
 
-		switch(parameters.direction){
-			case HORIZONTAL:
+		if(parameters.direction == HORIZONTAL){
 				var computedWidth = maxChildMinWidth;
 				if (parameters.fillHorizontally){
 					computedWidth = Std.int((width - parameters.horizontalPadding*2 -((layoutChildren.length - 1) * parameters.spacing))/layoutChildren.length );
@@ -89,7 +88,7 @@ class LinearLayout implements LayoutAlgorithm<LinearLayoutSpec, LinearLayoutPara
 					layoutChild.compute(drawList,computedX,computedY,computedWidth, computedHeight);
 					currentX += computedWidth + parameters.spacing;
 				}
-			case VERTICAL:
+        }else if(parameters.direction == VERTICAL){
 				var computedWidth = maxChildMinWidth;
 				if (parameters.fillHorizontally){
 					computedWidth = width - parameters.horizontalPadding * 2;
@@ -127,7 +126,8 @@ class LinearLayout implements LayoutAlgorithm<LinearLayoutSpec, LinearLayoutPara
 					layoutChild.compute(drawList,computedX,computedY,computedWidth, computedHeight);
 					currentY += computedHeight + parameters.spacing;
 				}
-			default: Report.anError("LinearLayout", "unsopported direction " + parameters.direction);
+        }else{
+            Report.anError("LinearLayout", "unsopported direction " + parameters.direction);
 		}
 
 

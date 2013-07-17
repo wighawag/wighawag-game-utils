@@ -13,15 +13,17 @@ import wighawag.asset.spritesheet.TextureAtlas;
 import wighawag.asset.spritesheet.TextureAtlasLibrary;
 import promhx.Promise;
 
+import haxe.ds.StringMap;
+
 //TODO separate ti from TextureAtlas ?
 class NinePatchLibrary {
 
     private var textureAtlasLibrary : TextureAtlasLibrary;
-    private var promises : Hash<Promise<Batch<NinePatch>>>;
+    private var promises : StringMap<Promise<Batch<NinePatch>>>;
 
 
     public function new(textureAtlasLibrary : TextureAtlasLibrary) {
-        this.promises = new Hash();
+        this.promises = new StringMap();
         this.textureAtlasLibrary = textureAtlasLibrary;
     }
 

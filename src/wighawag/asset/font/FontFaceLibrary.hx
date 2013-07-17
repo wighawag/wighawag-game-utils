@@ -16,17 +16,19 @@ import wighawag.asset.load.BitmapAsset;
 import wighawag.report.Report;
 import promhx.Promise;
 
+import haxe.ds.StringMap;
+
 // TODO support font as a set of fontface
 class FontFaceLibrary {
 
     private var assetManager : AssetManager;
-    public var promises : Hash<Promise<FontFace>>;
-    private var batchPromises : Hash<Promise<Batch<FontFace>>>;
+    public var promises : StringMap<Promise<FontFace>>;
+    private var batchPromises : StringMap<Promise<Batch<FontFace>>>;
 
     public function new (assetManager : AssetManager) {
         this.assetManager = assetManager;
-        promises = new Hash();
-        batchPromises = new Hash();
+        promises = new StringMap();
+        batchPromises = new StringMap();
     }
 
 
@@ -40,7 +42,7 @@ class FontFaceLibrary {
             assetManager.loadBatch([id+".bitmap", id+".font"]).then(function(assets : Batch<Asset>): Void{
                 var bitmapAsset : BitmapAsset = cast(assets.get(id+".bitmap"));
                 var textAsset : TextAsset = cast(assets.get(id+".font"));
-                var glyphs = new Hash<Glyph>();
+                var glyphs = new StringMap<Glyph>();
                 var parser = new XMLAngelCodeFontParser(id, bitmapAsset, textAsset.text);
                 var fontFace = parser.parse();
                 promise.resolve(fontFace);

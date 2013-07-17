@@ -7,6 +7,7 @@
 ****/
 
 package wighawag.asset.font;
+import haxe.ds.StringMap;
 import wighawag.asset.load.BitmapAsset;
 import wighawag.asset.spritesheet.TextureAtlas;
 import wighawag.asset.spritesheet.SubTexture;
@@ -32,7 +33,7 @@ class XMLAngelCodeFontParser {
         var base : Int = Std.parseInt(x.node.common.att.base);
 
         var glyphs : Array<Glyph> = new Array();
-        var textures : Hash<SubTexture> = new Hash();
+        var textures : StringMap<SubTexture> = new StringMap();
 
         for (char in x.node.chars.nodes.char){
 
