@@ -4,7 +4,7 @@
   "license": "GPL",
   "tags": ["cross"],
   "description": "stuff to be but in specific libs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "releasenote": "",
   "contributors": ["wighawag"],
   "dependencies": {"wighawag-report":"0.0.1", "polygonal-ds":"1.4.0", 
