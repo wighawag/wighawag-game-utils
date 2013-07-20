@@ -8,7 +8,7 @@
   "releasenote": "",
   "contributors": ["wighawag"],
   "dependencies": {"wighawag-report":"0.0.1", "polygonal-ds":"1.4.0", 
- "wighawag-components-core":"0.0.1","wighawag-view":"0.0.1","wighawag-ui":"0.0.1","wighawag-asset":"0.0.1","wighawag-gpu":"0.0.2", "wighawag-utils":"0.0.1", 
+ "wighawag-components-core":"0.0.2","wighawag-view":"0.0.2","wighawag-ui":"0.0.1","wighawag-asset":"0.0.1","wighawag-gpu":"0.0.2", "wighawag-utils":"0.0.1", 
 "msignal":"1.2.1"},
   "classPath":"src"
 }
